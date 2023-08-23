@@ -16,7 +16,7 @@ const swaggerHandler = withSwagger({
           ]
         : [
             {
-              url: "https://watson-shop-v2.vercel.app",
+              url: "https://supermarket-chatbot.netlify.app",
             },
           ],
   },
