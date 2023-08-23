@@ -13,7 +13,7 @@ const Search = ({ result, search }) => {
   return (
     <>
       <Navbar />
-      <SearchContent result={result} search={search} />
+      <SearchContent key={result} result={result} search={search} />
       <Footer />
     </>
   );

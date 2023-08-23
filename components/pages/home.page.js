@@ -14,6 +14,7 @@ const Home = () => {
       <HomeCategories />
       <BaseContainer>
         <Divider
+        
           sx={{
             borderColor: "rgba(0, 0, 0, 0.10)",
             my: {

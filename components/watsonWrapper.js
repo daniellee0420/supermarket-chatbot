@@ -4,7 +4,8 @@ import {
   setEnableDebug,
 } from "@ibm-watson/assistant-web-chat-react";
 import config from "@/helpers/config";
-import { addItem } from "@/redux/slices/cart.slice";
+import { addItem,removeItem, clearCart } from "@/redux/slices/cart.slice";
+import { addFavItem, removeFavItem} from "@/redux/slices/favorite.slice";
 import { store } from "@/redux/store";
 
 const webChatOptions =
@@ -47,6 +48,9 @@ function receiveHandler(event) {
     const action_self = event.data.output.debug.turn_events.filter(
       (x) => x.event === "action_finished"
     )[0];
+    if(event.data.context.skills['actions skill'].action_variables[config.productNameVariableID] && action_self){
+      console.log(event.data.context.skills['actions skill'].action_variables)
+    }
 
     if (
       action_self.action_variables[config.productNameVariableID] &&
@@ -59,13 +63,49 @@ function receiveHandler(event) {
             config.productNameVariableID
           ].toLocaleLowerCase()
       );
+
       if (product_record.length > 0) {
-        store.dispatch(
-          addItem({
-            ...product_record[0],
-            qt: action_self.action_variables[config.productCountVariableID],
-          })
-        );
+        console.log(action_self)
+        //<--------------------------- shopping cart management------------------------------>
+        if(action_self.source.action == "action_1205"){
+          store.dispatch(
+            addItem({
+              ...product_record[0],
+              qt: action_self.action_variables[config.productCountVariableID],
+            })
+          );
+        }
+        if(action_self.source.action == "action_1205-2" && action_self.action_variables[config.productCountVariableID] == "yes"){
+          store.dispatch(
+            removeItem({
+              ...product_record[0],
+              qt: action_self.action_variables[config.productCountVariableID],
+            })
+          );
+        }
+        //<--------------------------- shopping cart management------------------------------>
+
+        //<--------------------------- favorite cart management------------------------------>
+
+        if(action_self.source.action == "action_1205-3" && action_self.action_variables[config.productCountVariableID] == "yes"){
+          store.dispatch(
+            addFavItem({
+              ...product_record[0],
+              qt: action_self.action_variables[config.productCountVariableID],
+            })
+          );
+        }   
+        console.log(action_self.source.action)
+        if(action_self.source.action == "action_1205-2-2" && action_self.action_variables[config.productCountVariableID] == "yes"){
+          console.log(action_self.action_variables)
+          store.dispatch(
+            removeFavItem({
+              ...product_record[0],
+              qt: action_self.action_variables[config.productCountVariableID],
+            })
+          );
+        }              
+        //<--------------------------- favorite cart management------------------------------>
       }
     }
   }
@@ -80,3 +120,4 @@ const WatsonWrapper = (props) => {
 };
 
 export default WatsonWrapper;
+// 
