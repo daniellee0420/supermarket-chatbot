@@ -11,7 +11,7 @@ import { store } from "@/redux/store";
 const webChatOptions =
   process.env.NODE_ENV === "production"
     ? {
-        integrationID: "361716ee-db18-404b-94c9-a4cb9f4aaa38", // The ID of this integration.
+        integrationID: "bf974de7-7eb6-4d29-9b74-9b37eb4f108b", // The ID of this integration.
         region: "au-syd", // The region your integration is hosted in.
         serviceInstanceID: "91b891fe-b4ac-44ae-a877-360a1a9075d2", // The ID of your service instance.
         showCloseAndRestartButton: true,
