@@ -4,13 +4,12 @@ import {
   setEnableDebug,
 } from "@ibm-watson/assistant-web-chat-react";
 
-
-
 import config from "@/helpers/config";
 import { addItem,removeItem, clearCart } from "@/redux/slices/cart.slice";
 import { addFavItem, removeFavItem} from "@/redux/slices/favorite.slice";
 import { store } from "@/redux/store";
-
+import $ from "jquery";
+var globalInstance;      
 const webChatOptions =
   process.env.NODE_ENV === "production"
     ? {
@@ -25,22 +24,48 @@ const webChatOptions =
         serviceInstanceID: "91b891fe-b4ac-44ae-a877-360a1a9075d2", // The ID of your service instance.
         showCloseAndRestartButton: true,
       };
+export function startRecord(){
+  if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
+    // Create a new instance of the SpeechRecognition object
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    // Start speech recognition
+    recognition.start();
+    // Handle recognition events
+    recognition.onresult = function(event) {
+      // Process speech recognition results
+      const transcript = event.results[event.results.length - 1][0].transcript;
+      $("textarea#WACInputContainer-TextArea.WAC__TextArea-textarea").val(transcript);
+      $("textarea#WACInputContainer-TextArea--homeScreenModern.WAC__TextArea-textarea").val(transcript);
+      $("textarea#WACInputContainer-TextArea.WAC__TextArea-textarea")[0].textContent = transcript;
+      $("textarea#WACInputContainer-TextArea--homeScreenModern.WAC__TextArea-textarea")[0].textContent = transcript;
+      $('button#WACInputContainer__SendButton--homeScreenModern').prop('disabled', false);
+      $('button#WACInputContainer__SendButton--homeScreenModern')[0].click();
+      const mockSendObject = {
+        input: {
+          message_type: 'text',
+          text: transcript
+        }
+      };;   
+      globalInstance.send(mockSendObject);         
+    };
+
+  } else {
+    console.log('SpeechRecognition API not supported');
+  }   
+}
 
 function onBeforeRender(instance) {
+  globalInstance = instance;
   try {
     // Make the instance available to the React components.
     instance.on({
       type: "receive",
       handler: (event) => receiveHandler(event),
-    });
-
-    // Do any other work you might want to do before rendering. If you don't need any other work here, you can just use
-    // onBeforeRender={setInstance} in the component above.
+    });      
   } catch (error) {
     console.log(error);
   }
 }
-
 function receiveHandler(event) {
   if (
     event?.data?.output?.debug?.turn_events &&
@@ -68,7 +93,6 @@ function receiveHandler(event) {
       );
 
       if (product_record.length > 0) {
-        console.log(action_self)
         //<--------------------------- shopping cart management------------------------------>
         if(action_self.source.action == "action_1205"){
           store.dispatch(
@@ -98,9 +122,7 @@ function receiveHandler(event) {
             })
           );
         }   
-        console.log(action_self.source.action)
         if(action_self.source.action == "action_1205-2-2" && action_self.action_variables[config.productCountVariableID] == "yes"){
-          console.log(action_self.action_variables)
           store.dispatch(
             removeFavItem({
               ...product_record[0],
@@ -113,14 +135,15 @@ function receiveHandler(event) {
     }
   }
 }
+
 const WatsonWrapper = (props) => {
   return (
     <WebChatContainer
       config={webChatOptions}
       onBeforeRender={(instance) => onBeforeRender(instance)}
+      onAfterRender={()=>onAfterRender()}
     />
   );
 };
 
 export default WatsonWrapper;
-// 
