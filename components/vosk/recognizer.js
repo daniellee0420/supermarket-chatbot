@@ -6,16 +6,7 @@ import Microphone from "./microphone";
 import ModelLoader from "./model-loader";
 import $ from "jquery";
 import WatsonWrapper,{startRecord} from "../watsonWrapper";
-const Word = styled.span<{ confidence: number }>`
-  color: ${({ confidence }) => {
-    const color = Math.max(255 * (1 - confidence) - 20, 0);
-    return `rgb(${color},${color},${color})`;
-  }};
-  white-space: normal;
-`;
 export const Recognizer = () => {
-  const [utterances, setUtterances] = useState([]);
-  const [partial, setPartial] = useState("");
   const [loadedModel, setLoadedModel] = useState(null);
   const [recognizer, setRecognizer] = useState();
   const [loading, setLoading] = useState(false);
@@ -34,18 +25,12 @@ export const Recognizer = () => {
           startRecord(result.text)
       }
     });
-  
-    recognizer.on("partialresult", (message) => {
-      setPartial(message.result.partial);
-    });
-  
     setRecognizer(() => {
       setLoading(false);
       setReady(true);
       return recognizer;
     });
   };
-
   return (
     <div style={{display: "inline-flex"}}>
       <ModelLoader

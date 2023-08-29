@@ -5,8 +5,6 @@ import React, { useCallback, useEffect, useState } from "react";
 
 import { AudioStreamer } from "./audiostreamer";
 import { audioBucket } from "./audiobucket";
-import { KaldiRecognizer } from "vosk-browser";
-
 let micStream;
 let audioStreamer;
 
