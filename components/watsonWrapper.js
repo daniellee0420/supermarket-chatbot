@@ -3,13 +3,15 @@ import {
   WebChatContainer,
   setEnableDebug,
 } from "@ibm-watson/assistant-web-chat-react";
-
 import config from "@/helpers/config";
 import { addItem,removeItem, clearCart } from "@/redux/slices/cart.slice";
 import { addFavItem, removeFavItem} from "@/redux/slices/favorite.slice";
 import { store } from "@/redux/store";
 import $ from "jquery";
-var globalInstance;      
+import { createModel, KaldiRecognizer, Model } from "vosk-browser";
+
+var globalInstance;   
+
 const webChatOptions =
   process.env.NODE_ENV === "production"
     ? {
@@ -24,36 +26,20 @@ const webChatOptions =
         serviceInstanceID: "91b891fe-b4ac-44ae-a877-360a1a9075d2", // The ID of your service instance.
         showCloseAndRestartButton: true,
       };
-export function startRecord(){
-  if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
-    // Create a new instance of the SpeechRecognition object
-    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-    // Start speech recognition
-    recognition.start();
-    // Handle recognition events
-    recognition.onresult = function(event) {
-      // Process speech recognition results
-      const transcript = event.results[event.results.length - 1][0].transcript;
-      $("textarea#WACInputContainer-TextArea.WAC__TextArea-textarea").val(transcript);
-      $("textarea#WACInputContainer-TextArea--homeScreenModern.WAC__TextArea-textarea").val(transcript);
-      $("textarea#WACInputContainer-TextArea.WAC__TextArea-textarea")[0].textContent = transcript;
-      $("textarea#WACInputContainer-TextArea--homeScreenModern.WAC__TextArea-textarea")[0].textContent = transcript;
-      $('button#WACInputContainer__SendButton--homeScreenModern').prop('disabled', false);
-      $('button#WACInputContainer__SendButton--homeScreenModern')[0].click();
-      const mockSendObject = {
-        input: {
-          message_type: 'text',
-          text: transcript
-        }
-      };;   
-      globalInstance.send(mockSendObject);         
-    };
 
-  } else {
-    console.log('SpeechRecognition API not supported');
-  }   
+  export async function startRecord(text){
+    const mockSendObject = {
+      input: {
+        message_type: 'text',
+        text: text
+      }
+    };;   
+    globalInstance.send(mockSendObject);       
 }
-
+export function stopRecord(){
+  rec.stop();
+  audioChunks = [];
+}
 function onBeforeRender(instance) {
   globalInstance = instance;
   try {

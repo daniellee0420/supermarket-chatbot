@@ -28,7 +28,7 @@ import Cart from "./cart";
 import Favorite from "./favorites";
 import Link from "next/link";
 import { useRouter } from "next/router";
-
+import { Recognizer } from "../vosk/recognizer";
 const Navbar = (props) => {
   const { noCategories } = props;
   const router = useRouter();
@@ -40,6 +40,8 @@ const Navbar = (props) => {
     <>
       <NavBox>
         <BaseContainer>
+        
+
           <NavbarInner>
             <Box
               display={"flex"}
@@ -148,6 +150,8 @@ const Navbar = (props) => {
                   onClick={() => setFavorite(!favorite)}
                   open={favorite}
                 />
+                <Recognizer/>
+
               </Box>
             </Box>
             {!noCategories && (

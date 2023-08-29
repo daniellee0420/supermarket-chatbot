@@ -12,7 +12,6 @@ import RemoveSharpIcon from "@mui/icons-material/RemoveSharp";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import { useDispatch } from "react-redux";
 import { addFavItem } from "@/redux/slices/favorite.slice";
-
 const ProductCard = (props) => {
   const { item, isLoading } = props;
   const [qt, setQt] = useState(1);
