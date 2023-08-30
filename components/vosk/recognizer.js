@@ -5,7 +5,7 @@ import { createModel, KaldiRecognizer, Model } from "vosk-browser";
 import Microphone from "./microphone";
 import ModelLoader from "./model-loader";
 import $ from "jquery";
-import WatsonWrapper,{startRecord} from "../watsonWrapper";
+import {sendText} from "../watsonWrapper";
 export const Recognizer = () => {
   const [loadedModel, setLoadedModel] = useState(null);
   const [recognizer, setRecognizer] = useState();
@@ -22,7 +22,7 @@ export const Recognizer = () => {
     recognizer.on("result", (message) => {
       const result = message.result;
         if(result.text.length >1){
-          startRecord(result.text)
+          sendText(result.text)
       }
     });
     setRecognizer(() => {

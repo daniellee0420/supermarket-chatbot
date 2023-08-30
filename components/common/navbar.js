@@ -26,9 +26,11 @@ import Button from "@mui/joy/Button";
 import config from "@/helpers/config";
 import Cart from "./cart";
 import Favorite from "./favorites";
+import Deliver from "./deliver";
+
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { Recognizer } from "../vosk/recognizer";
+// import { Recognizer } from "../vosk/recognizer";
 const Navbar = (props) => {
   const { noCategories } = props;
   const router = useRouter();
@@ -40,8 +42,6 @@ const Navbar = (props) => {
     <>
       <NavBox>
         <BaseContainer>
-        
-
           <NavbarInner>
             <Box
               display={"flex"}
@@ -150,8 +150,8 @@ const Navbar = (props) => {
                   onClick={() => setFavorite(!favorite)}
                   open={favorite}
                 />
-                <Recognizer/>
-
+                {/* <Recognizer/> */}
+                {/* <Deliver />*/}
               </Box>
             </Box>
             {!noCategories && (

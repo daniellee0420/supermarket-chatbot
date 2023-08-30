@@ -8,10 +8,10 @@ import { addItem,removeItem, clearCart } from "@/redux/slices/cart.slice";
 import { addFavItem, removeFavItem} from "@/redux/slices/favorite.slice";
 import { store } from "@/redux/store";
 import $ from "jquery";
+import { testRecognition, testStart,testStop} from "./vosk/microphone";
 import { createModel, KaldiRecognizer, Model } from "vosk-browser";
-
 var globalInstance;   
-
+var modelName = "vosk-model-small-en-us-0.15.tar.gz";
 const webChatOptions =
   process.env.NODE_ENV === "production"
     ? {
@@ -27,18 +27,14 @@ const webChatOptions =
         showCloseAndRestartButton: true,
       };
 
-  export async function startRecord(text){
-    const mockSendObject = {
-      input: {
-        message_type: 'text',
-        text: text
-      }
-    };;   
-    globalInstance.send(mockSendObject);       
-}
-export function stopRecord(){
-  rec.stop();
-  audioChunks = [];
+export async function sendText(text){
+  const mockSendObject = {
+    input: {
+      message_type: 'text',
+      text: text
+    }
+  };   
+  globalInstance.send(mockSendObject);       
 }
 function onBeforeRender(instance) {
   globalInstance = instance;
@@ -121,7 +117,50 @@ function receiveHandler(event) {
     }
   }
 }
+async function loadModel(path) {
+  const publicUrl = process.env.PUBLIC_URL || window.location.origin;
+  const model = await createModel(publicUrl + "/models/" + path);
+  const recognizer = new model.KaldiRecognizer(48000);
+  recognizer.setWords(true);
+  recognizer.on("result", (message) => {
+    const result = message.result;
+    if(result.text.length >1){
+      sendText(result.text)
+    }
+  });
+  return recognizer;
+  // setRecognizer(() => {
+  //   setLoading(false);
+  //   setReady(true);
+  //   return recognizer;
+  // });
+};
 
+async function onAfterRender() {
+  var resRecog = loadModel(modelName);
+  resRecog.then((recognizer)=>{
+    testRecognition(recognizer);
+    setInterval(() => {
+      var recordStartBtn = $("button#start_record.WACInputContainer__SendButton.WAC__button--base.WAC__button--primary.record");
+      var recordStopBtn = $("button#stop_record.WACInputContainer__SendButton.WAC__button--base.WAC__button--primary.record");       
+      if(recordStartBtn.length == 0 && recordStopBtn.length == 0){
+        $(".WACInputContainer").append('<button class="WACInputContainer__SendButton WAC__button--base WAC__button--primary record" style="background-color: white;border: solid 1px cadetblue;" id="start_record" type="button" aria-label="Click to record your voice"><img style="width:24px; height:30px" src="https://cdn-icons-png.flaticon.com/512/25/25682.png"/></button>');
+        $(".WACInputContainer").append('<button class="WACInputContainer__SendButton WAC__button--base WAC__button--primary record" style="display:none; background-color: white;border: solid 1px cadetblue;" id="stop_record" type="button" aria-label="Click to record your voice"><img style="width:24px; height:30px" src="https://www.shareicon.net/data/2015/11/12/670698_mute_512x512.png"/></button>');    
+        $("button#start_record.WACInputContainer__SendButton.WAC__button--base.WAC__button--primary").click(function(){
+          $("button#start_record.WACInputContainer__SendButton.WAC__button--base.WAC__button--primary.record").hide();
+          $("button#stop_record.WACInputContainer__SendButton.WAC__button--base.WAC__button--primary.record").show();        
+          testStart();
+        });
+        $("button#stop_record.WACInputContainer__SendButton.WAC__button--base.WAC__button--primary").click(function(){
+          $("button#stop_record.WACInputContainer__SendButton.WAC__button--base.WAC__button--primary.record").hide();                
+          $("button#start_record.WACInputContainer__SendButton.WAC__button--base.WAC__button--primary.record").show();
+          testStop();
+        });      
+      }
+
+    }, 1000);
+  });
+}
 const WatsonWrapper = (props) => {
   return (
     <WebChatContainer
