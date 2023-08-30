@@ -129,11 +129,6 @@ async function loadModel(path) {
     }
   });
   return recognizer;
-  // setRecognizer(() => {
-  //   setLoading(false);
-  //   setReady(true);
-  //   return recognizer;
-  // });
 };
 
 async function onAfterRender() {
@@ -144,8 +139,9 @@ async function onAfterRender() {
       var recordStartBtn = $("button#start_record.WACInputContainer__SendButton.WAC__button--base.WAC__button--primary.record");
       var recordStopBtn = $("button#stop_record.WACInputContainer__SendButton.WAC__button--base.WAC__button--primary.record");       
       if(recordStartBtn.length == 0 && recordStopBtn.length == 0){
-        $(".WACInputContainer").append('<button class="WACInputContainer__SendButton WAC__button--base WAC__button--primary record" style="background-color: white;border: solid 1px cadetblue;" id="start_record" type="button" aria-label="Click to record your voice"><img style="width:24px; height:30px" src="https://cdn-icons-png.flaticon.com/512/25/25682.png"/></button>');
-        $(".WACInputContainer").append('<button class="WACInputContainer__SendButton WAC__button--base WAC__button--primary record" style="display:none; background-color: white;border: solid 1px cadetblue;" id="stop_record" type="button" aria-label="Click to record your voice"><img style="width:24px; height:30px" src="https://www.shareicon.net/data/2015/11/12/670698_mute_512x512.png"/></button>');    
+        $(".WACInputContainer").append('<button class="WACInputContainer__SendButton WAC__button--base WAC__button--primary record" style="background-color: white;border: solid 1px cadetblue;" id="start_record" type="button" aria-label="Click to record your voice"><img style="width:24px; height:30px" src="https://www.shareicon.net/data/2015/11/12/670698_mute_512x512.png"/></button>');
+        $(".WACInputContainer").append('<button class="WACInputContainer__SendButton WAC__button--base WAC__button--primary record" style="display:none; background-color: white;border: solid 1px cadetblue;" id="stop_record" type="button" aria-label="Click to record your voice"><img style="width:24px; height:30px" src="https://cdn-icons-png.flaticon.com/512/25/25682.png"/></button>');    
+        
         $("button#start_record.WACInputContainer__SendButton.WAC__button--base.WAC__button--primary").click(function(){
           $("button#start_record.WACInputContainer__SendButton.WAC__button--base.WAC__button--primary.record").hide();
           $("button#stop_record.WACInputContainer__SendButton.WAC__button--base.WAC__button--primary.record").show();        

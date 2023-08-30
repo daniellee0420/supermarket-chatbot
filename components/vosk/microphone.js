@@ -46,8 +46,8 @@ export function testStart(){
   micStream?.pipe(audioStreamer);  
 }
 export function testStop(){
-  micStream.unpipe(audioStreamer);
-  micStream.pipe(audioBucket);
+  micStream?.unpipe(audioStreamer);
+  micStream?.pipe(audioBucket);
 }
 
 const Microphone = ({
