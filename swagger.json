@@ -6,7 +6,7 @@
     },
     "servers": [
         {
-            "url": "https://supermarket-chatbot.netlify.app/"
+            "url": "https://supermarket-chatbot.netlify.app"
         }
     ],
     "paths": {

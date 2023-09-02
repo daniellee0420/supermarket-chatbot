@@ -2,7 +2,7 @@ import config from "@/helpers/config";
 
 const validateCategory = (req, res) => {
   const { category_name } = req.body;
-
+  console.log(category_name)
   if(
     config.findIndex(
       (x) => x.value.toLowerCase() === category_name.toLowerCase()
