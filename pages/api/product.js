@@ -53,7 +53,6 @@ import validateProduct from "@/handlers/product.handler";
 
 function handler(req, res) {
   const { method } = req;
-
   switch (method) {
     case "POST":
       return validateProduct(req, res);

@@ -7,13 +7,14 @@ import HomeFeatured from "./home/featured";
 import Footer from "../common/footer";
 import CategoriesHeader from "./categories/categoriesHeader";
 import CategoryProducts from "./categories/categoriesProducts";
-
+import WatsonWrapper from "../watsonWrapper";
 const Categories = ({ category }) => {
   return (
     <>
       <Navbar noCategories />
       <CategoriesHeader item={category} />
       <CategoryProducts item={category} />
+      <WatsonWrapper />
       <Footer />
     </>
   );

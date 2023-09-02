@@ -26,7 +26,6 @@ import Button from "@mui/joy/Button";
 import config from "@/helpers/config";
 import Cart from "./cart";
 import Favorite from "./favorites";
-import Deliver from "./deliver";
 
 import Link from "next/link";
 import { useRouter } from "next/router";

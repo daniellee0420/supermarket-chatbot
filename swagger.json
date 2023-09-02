@@ -6,7 +6,7 @@
     },
     "servers": [
         {
-            "url": "https://supermarket-chatbot.netlify.app"
+            "url": "https://supermarket-chatbot.netlify.app/"
         }
     ],
     "paths": {
@@ -81,7 +81,79 @@
                     }
                 }
             }
-        }
+        },
+        "/api/category": {
+            "post": {
+                "summary": "Check category availability by it's name",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "category_name"
+                                ],
+                                "properties": {
+                                    "category_name": {
+                                        "type": "string"
+                                    }
+                                },
+                                "example": {
+                                    "category_name": "bakery"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Available",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "example": {
+                                        "success": false,
+                                        "message": "Category is available to order"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Unavailable",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "example": {
+                                        "success": false,
+                                        "message": "Not found"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }        
     },
     "components": {},
     "tags": []

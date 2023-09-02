@@ -10,8 +10,9 @@ import { store } from "@/redux/store";
 import $ from "jquery";
 import { testRecognition, testStart,testStop} from "./vosk/microphone";
 import { createModel, KaldiRecognizer, Model } from "vosk-browser";
-var globalInstance;   
+var globalInstance;
 var modelName = "vosk-model-small-en-us-0.15.tar.gz";
+
 const webChatOptions =
   process.env.NODE_ENV === "production"
     ? {
@@ -58,65 +59,62 @@ function receiveHandler(event) {
     const action_self = event.data.output.debug.turn_events.filter(
       (x) => x.event === "action_finished"
     )[0];
-    if(event.data.context.skills['actions skill'].action_variables[config.productNameVariableID] && action_self){
-      console.log(event.data.context.skills['actions skill'].action_variables)
-    }
+    // if (
+    //   action_self.action_variables[config.productNameVariableID] &&
+    //   action_self.action_variables[config.productCountVariableID]
+    // ) {
+    //   const product_record = config.products.filter(
+    //     (x) =>
+    //       x.title.toLocaleLowerCase() ===
+    //       action_self.action_variables[
+    //         config.productNameVariableID
+    //       ].toLocaleLowerCase()
+    //   );
+    //   if (product_record.length > 0) {
+    //     //<--------------------------- shopping cart management------------------------------>
+    //     if(action_self.source.action == "action_1205"){
+    //       store.dispatch(
+    //         addItem({
+    //           ...product_record[0],
+    //           qt: action_self.action_variables[config.productCountVariableID],
+    //         })
+    //       );
+    //     }
+    //     if(action_self.source.action == "action_1205-2" && action_self.action_variables[config.productCountVariableID] == "yes"){
+    //       store.dispatch(
+    //         removeItem({
+    //           ...product_record[0],
+    //           qt: action_self.action_variables[config.productCountVariableID],
+    //         })
+    //       );
+    //     }
+    //     //<--------------------------- shopping cart management------------------------------>
 
-    if (
-      action_self.action_variables[config.productNameVariableID] &&
-      action_self.action_variables[config.productCountVariableID]
-    ) {
-      const product_record = config.products.filter(
-        (x) =>
-          x.title.toLocaleLowerCase() ===
-          action_self.action_variables[
-            config.productNameVariableID
-          ].toLocaleLowerCase()
-      );
+    //     //<--------------------------- favorite cart management------------------------------>
 
-      if (product_record.length > 0) {
-        //<--------------------------- shopping cart management------------------------------>
-        if(action_self.source.action == "action_1205"){
-          store.dispatch(
-            addItem({
-              ...product_record[0],
-              qt: action_self.action_variables[config.productCountVariableID],
-            })
-          );
-        }
-        if(action_self.source.action == "action_1205-2" && action_self.action_variables[config.productCountVariableID] == "yes"){
-          store.dispatch(
-            removeItem({
-              ...product_record[0],
-              qt: action_self.action_variables[config.productCountVariableID],
-            })
-          );
-        }
-        //<--------------------------- shopping cart management------------------------------>
-
-        //<--------------------------- favorite cart management------------------------------>
-
-        if(action_self.source.action == "action_1205-3" && action_self.action_variables[config.productCountVariableID] == "yes"){
-          store.dispatch(
-            addFavItem({
-              ...product_record[0],
-              qt: action_self.action_variables[config.productCountVariableID],
-            })
-          );
-        }   
-        if(action_self.source.action == "action_1205-2-2" && action_self.action_variables[config.productCountVariableID] == "yes"){
-          store.dispatch(
-            removeFavItem({
-              ...product_record[0],
-              qt: action_self.action_variables[config.productCountVariableID],
-            })
-          );
-        }              
-        //<--------------------------- favorite cart management------------------------------>
-      }
-    }
+    //     if(action_self.source.action == "action_1205-3" && action_self.action_variables[config.productCountVariableID] == "yes"){
+    //       store.dispatch(
+    //         addFavItem({
+    //           ...product_record[0],
+    //           qt: action_self.action_variables[config.productCountVariableID],
+    //         })
+    //       );
+    //     }   
+    //     if(action_self.source.action == "action_1205-2-2" && action_self.action_variables[config.productCountVariableID] == "yes"){
+    //       store.dispatch(
+    //         removeFavItem({
+    //           ...product_record[0],
+    //           qt: action_self.action_variables[config.productCountVariableID],
+    //         })
+    //       );
+    //     }              
+    //     //<--------------------------- favorite cart management------------------------------>
+    //   }
+    // }
   }
 }
+
+ //<--------------------------- load vosk model ------------------------------>
 async function loadModel(path) {
   const publicUrl = process.env.PUBLIC_URL || window.location.origin;
   const model = await createModel(publicUrl + "/models/" + path);
@@ -130,8 +128,10 @@ async function loadModel(path) {
   });
   return recognizer;
 };
+//<--------------------------- load vosk model ------------------------------>
 
 async function onAfterRender() {
+  console.log(process.env.NODE_ENV)
   var resRecog = loadModel(modelName);
   resRecog.then((recognizer)=>{
     testRecognition(recognizer);

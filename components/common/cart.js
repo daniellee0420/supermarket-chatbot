@@ -44,12 +44,13 @@ const Cart = (props) => {
           <Typography>
             <Typography
               sx={parse(`color: #000;
-font-family: Poppins;
-font-size: 28px;
-font-style: normal;
-font-weight: 400;
-line-height: 22px; /* 78.571% */
-letter-spacing: -0.408px;`)}
+                    font-family: Poppins;
+                    font-size: 28px;
+                    font-style: normal;
+                    font-weight: 400;
+                    line-height: 22px; /* 78.571% */
+                    letter-spacing: -0.408px;`)
+                  }
             >
               Shopping Cart
             </Typography>
