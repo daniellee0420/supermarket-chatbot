@@ -4,7 +4,7 @@ const validateCategory = (req, res) => {
   const { category_name } = req.body;
   console.log(category_name)
   if(
-    config.findIndex(
+    config.categories.findIndex(
       (x) => x.value.toLowerCase() === category_name.toLowerCase()
     ) > -1
   ){
