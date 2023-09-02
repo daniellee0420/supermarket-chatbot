@@ -10,6 +10,9 @@ import { store } from "@/redux/store";
 import $ from "jquery";
 import { testRecognition, testStart,testStop} from "./vosk/microphone";
 import { createModel, KaldiRecognizer, Model } from "vosk-browser";
+import { useRouter } from 'next/router';
+
+
 var globalInstance;
 var modelName = "vosk-model-small-en-us-0.15.tar.gz";
 
@@ -59,58 +62,71 @@ function receiveHandler(event) {
     const action_self = event.data.output.debug.turn_events.filter(
       (x) => x.event === "action_finished"
     )[0];
-    // if (
-    //   action_self.action_variables[config.productNameVariableID] &&
-    //   action_self.action_variables[config.productCountVariableID]
-    // ) {
-    //   const product_record = config.products.filter(
-    //     (x) =>
-    //       x.title.toLocaleLowerCase() ===
-    //       action_self.action_variables[
-    //         config.productNameVariableID
-    //       ].toLocaleLowerCase()
-    //   );
-    //   if (product_record.length > 0) {
-    //     //<--------------------------- shopping cart management------------------------------>
-    //     if(action_self.source.action == "action_1205"){
-    //       store.dispatch(
-    //         addItem({
-    //           ...product_record[0],
-    //           qt: action_self.action_variables[config.productCountVariableID],
-    //         })
-    //       );
-    //     }
-    //     if(action_self.source.action == "action_1205-2" && action_self.action_variables[config.productCountVariableID] == "yes"){
-    //       store.dispatch(
-    //         removeItem({
-    //           ...product_record[0],
-    //           qt: action_self.action_variables[config.productCountVariableID],
-    //         })
-    //       );
-    //     }
-    //     //<--------------------------- shopping cart management------------------------------>
 
-    //     //<--------------------------- favorite cart management------------------------------>
+    //<--------------------------- navigate page management------------------------------>
+    if(action_self.source.action == "action_1205-3-2"){
+      // console.log(useRouter())
+      // const router = useRouter();
+      const originPath = window.location.origin;
+      console.log(originPath);
+      window.location.href = '/categories/'+action_self.action_variables[config.productNameVariableID];
+    }        
+    //<--------------------------- navigate page management------------------------------>
+    if (
+      action_self.action_variables[config.productNameVariableID] &&
+      action_self.action_variables[config.productCountVariableID]
+    ) {
+      const product_record = config.products.filter(
+        (x) =>
+          x.title.toLocaleLowerCase() ===
+          action_self.action_variables[
+            config.productNameVariableID
+          ].toLocaleLowerCase()
+      );
+      if (product_record.length > 0) {
 
-    //     if(action_self.source.action == "action_1205-3" && action_self.action_variables[config.productCountVariableID] == "yes"){
-    //       store.dispatch(
-    //         addFavItem({
-    //           ...product_record[0],
-    //           qt: action_self.action_variables[config.productCountVariableID],
-    //         })
-    //       );
-    //     }   
-    //     if(action_self.source.action == "action_1205-2-2" && action_self.action_variables[config.productCountVariableID] == "yes"){
-    //       store.dispatch(
-    //         removeFavItem({
-    //           ...product_record[0],
-    //           qt: action_self.action_variables[config.productCountVariableID],
-    //         })
-    //       );
-    //     }              
-    //     //<--------------------------- favorite cart management------------------------------>
-    //   }
-    // }
+
+
+        //<--------------------------- shopping cart management------------------------------>
+        if(action_self.source.action == "action_1205"){
+          store.dispatch(
+            addItem({
+              ...product_record[0],
+              qt: action_self.action_variables[config.productCountVariableID],
+            })
+          );
+        }
+        if(action_self.source.action == "action_1205-2" && action_self.action_variables[config.productCountVariableID] == "yes"){
+          store.dispatch(
+            removeItem({
+              ...product_record[0],
+              qt: action_self.action_variables[config.productCountVariableID],
+            })
+          );
+        }
+        //<--------------------------- shopping cart management------------------------------>
+
+        //<--------------------------- favorite cart management------------------------------>
+
+        if(action_self.source.action == "action_1205-3" && action_self.action_variables[config.productCountVariableID] == "yes"){
+          store.dispatch(
+            addFavItem({
+              ...product_record[0],
+              qt: action_self.action_variables[config.productCountVariableID],
+            })
+          );
+        }   
+        if(action_self.source.action == "action_1205-2-2" && action_self.action_variables[config.productCountVariableID] == "yes"){
+          store.dispatch(
+            removeFavItem({
+              ...product_record[0],
+              qt: action_self.action_variables[config.productCountVariableID],
+            })
+          );
+        }              
+        //<--------------------------- favorite cart management------------------------------>
+      }
+    }
   }
 }
 
@@ -157,6 +173,7 @@ async function onAfterRender() {
     }, 1000);
   });
 }
+
 const WatsonWrapper = (props) => {
   return (
     <WebChatContainer
